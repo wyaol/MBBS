@@ -12,7 +12,7 @@ export default function CurrentUser(options?: { required?: boolean }) {
     value: async (action) => {
       const token = action.request.headers[HEADER_TOKEN];
       if (!token) {
-        if (options?.required) throw new UnauthorizedError();
+        if (options?.required) throw new UnauthorizedError('未登录，请登录后浏览');
         return null;
       }
       const dbName = getDBNameFromApiRequest(action.request);
@@ -21,7 +21,7 @@ export default function CurrentUser(options?: { required?: boolean }) {
       const db = await getDB(dbName);
       const userId = await getUserIdFromToken(db, token);
       if (!userId) {
-        if (options?.required) throw new UnauthorizedError();
+        if (options?.required) throw new UnauthorizedError('未登录没有权限浏览');
         return null;
       }
       const user = await getUser(db, userId);

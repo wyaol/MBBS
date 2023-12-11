@@ -140,13 +140,13 @@ export default class ResourceController {
       const db = await getDB(domain);
       if (fileName.startsWith('attachment/')) {
         // 附件校验登录态
-        if (token.length < 8 || !uid) {
-          throw new ForbiddenError('出错：附件仅登录后可访问');
-        }
-        const userTokens = await getValidUserTokens(db, parseInt(uid));
-        if (!userTokens.some((t) => t.token.startsWith(token))) {
-          throw new ForbiddenError('出错：附件仅登录后可访问');
-        }
+        // if (token.length < 8 || !uid) {
+        //   throw new ForbiddenError('出错：附件仅登录后可访问');
+        // }
+        // const userTokens = await getValidUserTokens(db, parseInt(uid));
+        // if (!userTokens.some((t) => t.token.startsWith(token))) {
+        //   throw new ForbiddenError('出错：附件仅登录后可访问');
+        // }
       } else {
         // 图片校验 referer
         if (req.headers.referer && (await getSettingValue(db, '__internal_check_referer')) === '1') {

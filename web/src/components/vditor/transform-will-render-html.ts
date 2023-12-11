@@ -61,7 +61,7 @@ export default function transformWillRenderHtml(html: string, transformAttachmen
       const isVideo = /\.(mp4|avi)$/.test(a.href);
       a.setAttribute('href', tryAppendResourceBaseUrl(a.getAttribute('href'), true));
       if (isVideo) {
-        a.outerHTML = `<video src="${a.href}" controls preload="none"></video>`;
+        a.outerHTML = `<video src="${a.href}" controls preload="auto"></video>`;
       }
     });
   }

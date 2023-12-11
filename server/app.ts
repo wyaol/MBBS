@@ -4,7 +4,7 @@ import { initBBSRouter } from './routes/bbs/init';
 import { getDBNameFromApiRequest } from './models/db';
 import { HEADER_USERID } from './routes/bbs/const';
 import { logPath } from './utils/log-util';
-
+const cors = require('cors');
 const express = require('express');
 const path = require('path');
 const cookieParser = require('cookie-parser');
@@ -14,6 +14,7 @@ const bodyParser = require('body-parser');
 const compression = require('compression');
 
 const app = express();
+app.use(cors());
 
 app.use(compression()); // 开启 gzip 压缩
 
