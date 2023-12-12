@@ -1,5 +1,6 @@
 import { getResourceUrl } from '@/utils/resource-url';
 import { getLoginUser } from '@/api/base/user';
+import Hls from 'hls.js';
 
 const parseHTMLTemp = document.createElement('template');
 
@@ -57,11 +58,32 @@ export default function transformWillRenderHtml(html: string, transformAttachmen
 
   // 附件下载地址(补上静态资源服务器开头的绝对地址)
   if (transformAttachmentLink) {
-    Array.from(parseHTMLTemp.content.querySelectorAll('a')).forEach((a) => {
-      const isVideo = /\.(mp4|avi)$/.test(a.href);
-      a.setAttribute('href', tryAppendResourceBaseUrl(a.getAttribute('href'), true));
+    Array.from(parseHTMLTemp.content.querySelectorAll('a')).forEach((a, index) => {
+      const isVideo = /\.(mp4|avi|m3u8)$/.test(a.href);
+      a.setAttribute('href', tryAppendResourceBaseUrl(a.getAttribute('href'), false));
       if (isVideo) {
-        a.outerHTML = `<video src="${a.href}" controls preload="auto"></video>`;
+
+        // 创建 video 元素
+        const video = document.createElement('video');
+        video.controls = true;
+        video.preload = 'metadata';
+
+        // 创建 source 元素，设置视频源
+        const source = document.createElement('source');
+        source.src = a.href;
+        video.appendChild(source);
+
+        // 在视频加载后使用 Hls.js 进行处理
+        video.addEventListener('loadeddata', () => {
+          if (Hls.isSupported()) {
+            const hls = new Hls();
+            hls.loadSource(video.src);
+            hls.attachMedia(video);
+          }
+        });
+
+        // 替换原有的 a 标签
+        a.parentNode.replaceChild(video, a);
       }
     });
   }

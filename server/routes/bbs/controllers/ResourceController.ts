@@ -33,6 +33,7 @@ import { formatSize } from '../../../utils/format-utils';
 import { DBResourceDir } from '../const';
 import getHostFromUrl from '../../../utils/get-host-from-url';
 import { getBindHosts } from '../../../utils/bind-host-util';
+import * as childProcess from 'child_process';
 
 let resourceIdNext = 1;
 
@@ -46,6 +47,51 @@ function getResourceFilePath(resourcePath: string) {
  */
 @Controller('/resources')
 export default class ResourceController {
+
+  // 新增判断文件是否为视频的函数，根据实际需求修改判断条件
+  private isVideoFile(file: Express.Multer.File): boolean {
+    const videoExtensions = ['.mp4', '.avi', '.mov'];  // 根据实际需求添加视频文件的扩展名
+    const extname = path.extname(file.originalname).toLowerCase();
+    return videoExtensions.includes(extname);
+  }
+
+  // 新增转换为m3u8格式的函数，根据实际需求修改实现
+  private async convertToM3u8(filePath: string): Promise<void> {
+    const outputDirectory = path.dirname(filePath);
+    const outputFileName = path.basename(filePath, path.extname(filePath)) + '.m3u8';
+    const outputPath = path.join(outputDirectory, outputFileName);
+    return new Promise((resolve, reject) => {
+      // ffmpeg 命令行参数，根据需要调整
+      const ffmpegArgs = [
+        '-i', filePath,          // 输入文件路径
+        '-c:v', 'libx264',       // 视频编码器
+        '-c:a', 'aac',           // 音频编码器
+        '-strict', 'experimental',
+        '-b:a', '192k',           // 音频比特率
+        '-b:v', '1024k',          // 视频比特率
+        '-s', '640x360',          // 视频分辨率
+        '-hls_time', '10',        // 分片时间间隔
+        '-hls_list_size', '0',    // 不保存所有分片信息到m3u8文件中
+        '-hls_segment_filename', `${outputDirectory}/segment_%03d.ts`,  // 分片文件名格式
+        outputPath,               // 输出m3u8文件路径
+      ];
+
+      const ffmpegProcess = childProcess.spawn('ffmpeg', ffmpegArgs);
+
+      ffmpegProcess.on('close', (code) => {
+        if (code === 0) {
+          resolve();
+        } else {
+          reject(new Error(`ffmpeg process exited with code ${code}`));
+        }
+      });
+
+      ffmpegProcess.on('error', (err) => {
+        reject(err);
+      });
+    });
+  }
+
   @Post('/')
   async post(
     @ReqLog('resources_write.json.log') resourcesWriteLogger: ReqLogger,
@@ -73,11 +119,18 @@ export default class ResourceController {
         throw new UIError(`无上传图片权限`);
       }
       const fileKey = `${Date.now()}_${resourceIdNext++}${path.extname(fileName)}`;
-      const filePath = `${domain}/${fileName.startsWith('attachment/') ? 'attachment/' : ''}${fileKey}`;
+      let filePath = `${domain}/${fileName.startsWith('attachment/') ? 'attachment/' : ''}${fileKey}`;
       const resFilePath = getResourceFilePath(filePath);
       await fse.mkdirs(path.dirname(resFilePath));
       await fse.move(file.path, resFilePath, { overwrite: true });
       resourcesWriteLogger.log({ filePath, fileSize: file.size });
+
+      // 新增判断上传文件为视频的逻辑，并调用转换函数
+      if (this.isVideoFile(file)) {
+        await this.convertToM3u8(resFilePath);
+        filePath = filePath.replace(`${path.extname(fileName)}`, '.m3u8')
+      }
+
       return {
         filePath,
       };
