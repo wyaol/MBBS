@@ -1,0 +1,10 @@
+version: '3.3'
+
+services:
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8441:8441"
+      - "884:884"
