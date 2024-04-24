@@ -1,5 +1,5 @@
 # 使用 Node.js 16 的官方 Docker 镜像作为基础镜像
-FROM node:16
+FROM node:14
 
 # 设置工作目录
 WORKDIR /app
@@ -8,7 +8,9 @@ WORKDIR /app
 COPY . /app
 
 # 在容器内执行 npm install 安装依赖
-RUN npm install
+RUN apt update \
+    && apt install -y ffmpeg \
+    && npm install
 
 # 暴露容器的 8441 端口
 EXPOSE 8441
