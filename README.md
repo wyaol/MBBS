@@ -80,7 +80,7 @@ mbbs serve # 在当前目录启动论坛服务
 
 #### 技术栈
 
-- 后端：Node.js(v16) ([express](https://github.com/expressjs/express) + [routing-controllers](https://github.com/typestack/routing-controllers.git) + Typescript)
+- 后端：Node.js(v14) ([express](https://github.com/expressjs/express) + [routing-controllers](https://github.com/typestack/routing-controllers.git) + Typescript)
 - 前端：React ([mui](https://mui.com/) + Typescript)
 - 数据库：Sqlite (ORM: [sequelize](https://sequelize.org/))
 

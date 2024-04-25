@@ -57,7 +57,8 @@ export default class ResourceController {
   // 新增转换为m3u8格式的函数，根据实际需求修改实现
   private async convertToM3u8(filePath: string): Promise<void> {
     const outputDirectory = path.dirname(filePath);
-    const outputFileName = path.basename(filePath, path.extname(filePath)) + '.m3u8';
+    const fileNameWithoutSuffix = path.basename(filePath, path.extname(filePath));
+    const outputFileName = fileNameWithoutSuffix + '.m3u8';
     const outputPath = path.join(outputDirectory, outputFileName);
     return new Promise((resolve, reject) => {
       // ffmpeg 命令行参数，根据需要调整
@@ -80,7 +81,7 @@ export default class ResourceController {
         '-hls_list_size',
         '0', // 不保存所有分片信息到m3u8文件中
         '-hls_segment_filename',
-        `${outputDirectory}/segment_%03d.ts`, // 分片文件名格式
+        `${outputDirectory}/${fileNameWithoutSuffix}_segment_%03d.ts`, // 分片文件名格式
         outputPath, // 输出m3u8文件路径
       ];
 
