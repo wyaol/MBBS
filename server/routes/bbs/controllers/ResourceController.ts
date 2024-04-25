@@ -137,7 +137,6 @@ export default class ResourceController {
       // 新增判断上传文件为视频的逻辑，并调用转换函数
       if (this.isVideoFile(file)) {
         this.convertToM3u8(resFilePath);
-        filePath = filePath.replace(`${path.extname(fileName)}`, '.m3u8');
       }
 
       return {
@@ -241,7 +240,7 @@ export default class ResourceController {
       }
 
       if (download === '1') {
-        const sourceFileName = path.basename(fileName).replace(/^\d+_\d+_?/, '');
+        const sourceFileName = path.basename(fileName);
         res.attachment(sourceFileName);
       }
 

@@ -1,6 +1,7 @@
 import { getResourceUrl } from '@/utils/resource-url';
 import { getLoginUser } from '@/api/base/user';
 import Hls from 'hls.js';
+import * as path from 'path';
 
 const parseHTMLTemp = document.createElement('template');
 
@@ -59,10 +60,9 @@ export default function transformWillRenderHtml(html: string, transformAttachmen
   // 附件下载地址(补上静态资源服务器开头的绝对地址)
   if (transformAttachmentLink) {
     Array.from(parseHTMLTemp.content.querySelectorAll('a')).forEach((a, index) => {
-      const isVideo = /\.(mp4|avi|m3u8)$/.test(a.href);
+      const isVideo = /\.(mp4|avi|mov)$/.test(a.href);
       a.setAttribute('href', tryAppendResourceBaseUrl(a.getAttribute('href'), false));
       if (isVideo) {
-
         // 创建 video 元素
         const video = document.createElement('video');
         video.controls = true;
@@ -70,7 +70,7 @@ export default function transformWillRenderHtml(html: string, transformAttachmen
 
         // 创建 source 元素，设置视频源
         const source = document.createElement('source');
-        source.src = a.href;
+        source.src = a.href.replace(path.extname(a.href), '.m3u8');
         video.appendChild(source);
 
         // 在视频加载后使用 Hls.js 进行处理
@@ -82,6 +82,11 @@ export default function transformWillRenderHtml(html: string, transformAttachmen
           }
         });
 
+        const downloadElement = document.createElement('a');
+        downloadElement.href = a.href + '?download=1';
+        downloadElement.text = '下载视频';
+        downloadElement.download = a.text;
+        a.parentNode.parentNode.appendChild(downloadElement);
         // 替换原有的 a 标签
         a.parentNode.replaceChild(video, a);
       }
