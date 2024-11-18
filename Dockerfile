@@ -1,4 +1,4 @@
-# 使用 Node.js 16 的官方 Docker 镜像作为基础镜像
+# 使用 Node.js 14 的官方 Docker 镜像作为基础镜像
 FROM node:14
 
 # 设置工作目录

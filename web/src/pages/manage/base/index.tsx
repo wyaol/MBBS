@@ -211,6 +211,8 @@ const BaseSetting = () => {
               { label: '512KB/s', value: 512 * 1024 + '' },
               { label: '1M/s', value: 1024 * 1024 + '' },
               { label: '10M/s', value: 10 * 1024 * 1024 + '' },
+              { label: '100M/s', value: 100 * 1024 * 1024 + '' },
+              { label: '1000M/s', value: 1000 * 1024 * 1024 + '' },
             ]}
             submitFailAlert
             onSubmit={async (inputValue) => {
@@ -245,6 +247,7 @@ const BaseSetting = () => {
               { label: '5M', value: 5 * 1024 * 1024 + '' },
               { label: '10M', value: 10 * 1024 * 1024 + '' },
               { label: '200M', value: 200 * 1024 * 1024 + '' },
+              { label: '2000M', value: 2000 * 1024 * 1024 + '' },
             ]}
             submitFailAlert
             onSubmit={async (inputValue) => {
