@@ -2,8 +2,9 @@ import fetchApi from '@/api/base/fetch';
 import { formatUserField, User } from './base/user';
 
 export async function getLoginCaptcha() {
-  const resp = await fetchApi('/login/captcha');
-  return resp.data as { id: string; svg: string };
+  // const resp = await fetchApi('/login/captcha');
+  // return resp.data as { id: string; svg: string };
+  return { id: '', svg: '' };
 }
 
 export async function login(param: { username: string; password: string; captcha_id: string; captcha_text: string }) {
@@ -29,8 +30,9 @@ export async function loginByQQ(param: { qq_access_token: string }) {
 }
 
 export async function getRegisterCaptcha() {
-  const resp = await fetchApi('/register/captcha');
-  return resp.data as { id: string; svg: string };
+  // const resp = await fetchApi('/register/captcha');
+  // return resp.data as { id: string; svg: string };
+  return { id: '', svg: '' };
 }
 
 export async function register(param: { username: string; password: string; captcha_id: string; captcha_text: string }) {

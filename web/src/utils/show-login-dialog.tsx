@@ -158,7 +158,7 @@ export default function showLoginDialog(option?: { closeIcon?: boolean }): Promi
                   }}
                 />
               </Field>
-              <Field name="captcha" rules={[{ required: true, message: '请输入验证码' }]} initialValue="">
+              {/* <Field name="captcha" rules={[{ required: true, message: '请输入验证码' }]} initialValue="">
                 <TextField
                   margin="dense"
                   label="验证码"
@@ -194,7 +194,7 @@ export default function showLoginDialog(option?: { closeIcon?: boolean }): Promi
                     ),
                   }}
                 />
-              </Field>
+              </Field> */}
               <LoadingButton
                 loading={submitting}
                 variant="contained"
@@ -375,7 +375,7 @@ export default function showLoginDialog(option?: { closeIcon?: boolean }): Promi
                   }}
                 />
               </Field>
-              <Field name="captcha" rules={[{ required: true, message: '请输入验证码' }]} initialValue="">
+              {/* <Field name="captcha" rules={[{ required: true, message: '请输入验证码' }]} initialValue="">
                 <TextField
                   margin="dense"
                   label="验证码"
@@ -411,7 +411,7 @@ export default function showLoginDialog(option?: { closeIcon?: boolean }): Promi
                     ),
                   }}
                 />
-              </Field>
+              </Field> */}
               <LoadingButton
                 loading={submitting}
                 variant="contained"

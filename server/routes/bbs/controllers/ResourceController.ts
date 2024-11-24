@@ -109,6 +109,7 @@ export default class ResourceController {
     @CurrentDomain() domain: string,
     @Res() res: Response,
     @BodyParam('fileName') fileName: string,
+    @BodyParam('m3u8') m3u8: string = 'true',
     @UploadedFile('file', {
       options: {
         storage: multer.diskStorage({}),
@@ -135,8 +136,9 @@ export default class ResourceController {
       resourcesWriteLogger.log({ filePath, fileSize: file.size });
 
       // 新增判断上传文件为视频的逻辑，并调用转换函数
-      if (this.isVideoFile(file)) {
+      if (this.isVideoFile(file) && m3u8 != 'false') {
         this.convertToM3u8(resFilePath);
+        filePath = filePath.replace(path.extname(filePath), '.m3u8');
       }
 
       return {

@@ -66,15 +66,15 @@ export default class LoginController {
     @CurrentDomain() domain: string,
     @BodyParam('username', { required: true }) username: string,
     @BodyParam('password', { required: true }) password: string,
-    @BodyParam('captcha_id', { required: true }) captchaId: number,
-    @BodyParam('captcha_text', { required: true }) captchaText: string,
+    // @BodyParam('captcha_id', { required: true }) captchaId: number,
+    // @BodyParam('captcha_text', { required: true }) captchaText: string,
   ) {
     username = username.trim();
-    captchaText = captchaText.trim();
-    if (!isDevEnv() && captchaLruCache.get(captchaId)?.toUpperCase() !== captchaText.toUpperCase()) {
-      throw new UIError('验证码校验失败，请重试');
-    }
-    captchaLruCache.del(captchaId);
+    // captchaText = captchaText.trim();
+    // if (!isDevEnv() && captchaLruCache.get(captchaId)?.toUpperCase() !== captchaText.toUpperCase()) {
+    //   throw new UIError('验证码校验失败，请重试');
+    // }
+    // captchaLruCache.del(captchaId);
 
     const user = (await getUserByName(db, username)) || (await getUserByEmail(db, username));
     if (!user) throw new UIError('用户不存在');
@@ -241,14 +241,15 @@ export default class LoginController {
   @Post('/resetPasswordByBindEmail')
   async resetPasswordByBindEmail(
     @CurrentDB() db: Sequelize,
-    @BodyParam('verify_code', { required: true }) verify_code: string,
+    @BodyParam('verify_code', { required: false }) verify_code: string,
     @BodyParam('email', { required: true }) email: string,
     @BodyParam('new_password', { required: true }) newPassword: string,
   ) {
     if (newPassword.length < 6) throw new UIError('密码长度必须大于等于 6 位');
-    if (ResetPasswordEmailVerifyCodeCacheMap.get(email)?.code !== verify_code) {
-      throw new UIError('验证码校验失败');
-    }
+    // disable code verify
+    // if (ResetPasswordEmailVerifyCodeCacheMap.get(email)?.code !== verify_code) {
+    //   throw new UIError('验证码校验失败');
+    // }
     // 验证码校验成功
     ResetPasswordEmailVerifyCodeCacheMap.del(email);
 

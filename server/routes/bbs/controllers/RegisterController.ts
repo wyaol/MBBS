@@ -112,8 +112,8 @@ export default class RegisterController {
     @CurrentDomain() domain: string,
     @BodyParam('username', { required: true }) username: string,
     @BodyParam('password', { required: true }) password: string,
-    @BodyParam('captcha_id', { required: true }) captchaId: number,
-    @BodyParam('captcha_text', { required: true }) captchaText: string,
+    // @BodyParam('captcha_id', { required: true }) captchaId: number,
+    // @BodyParam('captcha_text', { required: true }) captchaText: string,
   ) {
     await RegisterController.checkCanCreateUser(db);
 
@@ -122,11 +122,11 @@ export default class RegisterController {
     if (username.length < 3) throw new UIError('用户名长度必须大于等于 3 位');
     if (!/^[\d|a-z|A-Z|\-|_]*$/.test(username)) throw new UIError('用户名只能由数字、英文字母组成');
 
-    captchaText = captchaText.trim();
-    if (!isDevEnv() && captchaLruCache.get(captchaId)?.toUpperCase() !== captchaText.toUpperCase()) {
-      throw new UIError('验证码校验失败，请重试');
-    }
-    captchaLruCache.del(captchaId);
+    // captchaText = captchaText.trim();
+    // if (!isDevEnv() && captchaLruCache.get(captchaId)?.toUpperCase() !== captchaText.toUpperCase()) {
+    //   throw new UIError('验证码校验失败，请重试');
+    // }
+    // captchaLruCache.del(captchaId);
     if (await getUserByName(db, username)) {
       throw new UIError('该账号已存在');
     }

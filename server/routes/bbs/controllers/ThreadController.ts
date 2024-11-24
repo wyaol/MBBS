@@ -219,14 +219,14 @@ export default class ThreadController {
     }
 
     // 短时间发帖频率过快拦截
-    if (canCreate && !(await currentUser.isAdmin()) && !isDevEnv()) {
-      const createdThreadCountIn5Mins = await getUserCreateThreadCountInTimes(db, currentUser.id, [Date.now() - 5 * 60 * 1000, Date.now()]);
-      if (createdThreadCountIn5Mins >= 3) {
-        // 5分钟内 限制最多发帖3个
-        canCreate = false;
-        cantCreateReason = '发帖频率过快，请稍后再试';
-      }
-    }
+    // if (canCreate && !(await currentUser.isAdmin()) && !isDevEnv()) {
+    //   const createdThreadCountIn5Mins = await getUserCreateThreadCountInTimes(db, currentUser.id, [Date.now() - 5 * 60 * 1000, Date.now()]);
+    //   if (createdThreadCountIn5Mins >= 3) {
+    //     // 5分钟内 限制最多发帖3个
+    //     canCreate = false;
+    //     cantCreateReason = '发帖频率过快，请稍后再试';
+    //   }
+    // }
 
     // 帖子包含隐藏内容 & 发隐藏帖权限检查
     if (canCreate && content && markdownHasReplyHiddenContent(content)) {
